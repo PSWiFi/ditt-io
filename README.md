@@ -1,4 +1,4 @@
-# PipBot
+# Ditt-io
 
 This is a bot used to manage event based operations in the Showdown! Wi-Fi room.
 
@@ -9,8 +9,8 @@ Node.js v16+ should be fine.
 
 ### Clone the Repository
 ```bash
-git clone https://github.com/PSWiFi/PipBot.git PipBot
-cd PipBot
+git clone https://github.com/PSWiFi/Ditt-io.git Ditt-io
+cd Ditt-io
 ```
 
 ### Configure

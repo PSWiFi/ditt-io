@@ -45,7 +45,7 @@ async function handleMessage(message, client, DB) {
         // Also remember to add a break after every command
         // Yes I could've used modular functions but I'm lazy okay
         case "kill":
-        case "restart": // Technically this command ends the process, but PipBot's VPS has a cron job set up to instantly restart the process
+        case "restart": // Technically this command ends the process, but Ditt-io's VPS has a cron job set up to instantly restart the process
           checkPerms("roommod");
           process.exit(0);
 
