@@ -48,7 +48,7 @@ async function handleMessage(message, client, DB) {
     if (!message.content.startsWith(config.prefix)) {
       if (message.type === "pm" && message.author?.name)
         if (["thank you", "ty", "thanks"].includes(message.content.toLowerCase().trim())) {
-          const idx = ~~(Math.random() * REPLIES.lenth);
+          const idx = ~~(Math.random() * REPLIES.length);
           message.reply(REPLIES[idx]);
         } else {
           message.reply(DEFAULT_MESSAGE);
