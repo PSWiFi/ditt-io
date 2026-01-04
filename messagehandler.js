@@ -9,6 +9,35 @@ const FORMATTING_CHARS = ["*", "_", "`", "~", "^", "\\"];
 const DEFAULT_MESSAGE = `Hi, I'm ${username}! I'm a Bot for the WiFi room - my prefix is \`\`${config.prefix}\`\`. For support, please contact a staff member.`;
 const CANNOT_BE_USED_IN_PM = "This command can only be used in a room.";
 
+const REPLIES = [
+  "You're welcome!",
+  "You're welcome!",
+  "You're welcome!",
+  "You're welcome!",
+  "You're welcome!",
+  "You're welcome!",
+  "You're welcome!",
+  "You're welcome!",
+  "You're welcome!",
+  "You're welcome!",
+  "You're welcome!",
+  "You're welcome!",
+  "You're welcome!",
+  "You're welcome!",
+  "You're welcome!",
+  "You're welcome!",
+  "You're welcome!",
+  "You're welcome!",
+  "You're welcome!",
+  "You're welcome!",
+  "You're welcome!",
+  "You're welcome!",
+  "You're welcome!",
+  "Go away.",
+  "Stop messaging me.",
+  "piss off",
+];
+
 async function handleMessage(message, client, DB) {
   if (message.author?.name) {
     if (message.isIntro || message.author?.name === client.status.username)
@@ -19,7 +48,8 @@ async function handleMessage(message, client, DB) {
     if (!message.content.startsWith(config.prefix)) {
       if (message.type === "pm" && message.author?.name)
         if (["thank you", "ty", "thanks"].includes(message.content.toLowerCase().trim())) {
-          message.reply("You're welcome!");
+          const idx = ~~(Math.random() * REPLIES.lenth);
+          message.reply(REPLIES[idx]);
         } else {
           message.reply(DEFAULT_MESSAGE);
         }
