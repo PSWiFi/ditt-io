@@ -18,7 +18,11 @@ async function handleMessage(message, client, DB) {
 
     if (!message.content.startsWith(config.prefix)) {
       if (message.type === "pm" && message.author?.name)
-        message.reply(DEFAULT_MESSAGE);
+        if (["thank you", "ty", "thanks"].includes(message.content.toLowerCase().trim())) {
+          message.reply("You're welcome!");
+        } else {
+          message.reply(DEFAULT_MESSAGE);
+        }
       return;
     }
 
