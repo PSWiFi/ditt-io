@@ -32,6 +32,7 @@ client.on("leaveRoom", async (room) => {
 
 // Unga bunga
 client.on("connect", async () => {
+  client.send("|/avatar dittio");
   setInterval(() => {
     for (const room of config.rooms) {
       client.send("|/j " + room);
