@@ -10,6 +10,7 @@ require("./globals.js");
 
 const DB = require("./database.js");
 const messageHandler = require("./messagehandler.js");
+const joinHandler = require("./joinhandler.js");
 
 const client = new Client({
   username,
@@ -21,6 +22,10 @@ client.connect();
 
 client.on("message", async (message) => {
   await messageHandler.handleMessage(message, client, DB);
+});
+
+client.on("join", async (room, user, isIntro) => {
+  await joinHandler.handleJoin(room, user, isIntro, DB);
 });
 
 // Attempt to rejoin room upon leave

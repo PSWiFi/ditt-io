@@ -16,8 +16,38 @@ const linkUserSchema = new mongoose.Schema({
   discord: { type: String, required: true },
 });
 
+const discordNotifSchema = new mongoose.Schema({
+  _id: { type: String, required: true },
+  ping: { type: [String], required: true, default: ["@here"] },
+  lastSent: { type: Number, required: true, default: 0 },
+  reason: {type: String, required: true },
+});
+
 const Points = mongoose.model("points", pointsSchema);
 const linkUser = mongoose.model("linkUser", linkUserSchema);
+const discordNotif = mongoose.model("discordNotif", discordNotifSchema);
+
+async function createUserNotif(user, room, reason, tags) {
+    const notif = new discordNotif({
+      _id: `${toId(room)}-${toId(user)}`,
+      reason: reason,
+      ping: tags,
+    });
+    return notif.save();
+}
+
+async function deleteUserNotif(user, room) {
+  return await discordNotif.findByIdAndDelete(`${toId(room)}-${toId(user)}`);
+}
+
+async function getDiscordNotifUser(user, room) {
+  const id = `${toId(room)}-${toId(user)}`;
+  return await discordNotif.findById(id);
+}
+
+async function getAllDiscordNotifs() {
+  return await discordNotif.find();
+}
 
 async function getLinkUser(user) {
   return await linkUser.findById(user);
@@ -145,4 +175,9 @@ module.exports = {
 
   getLinkUser,
   verifyLinkUser,
+
+  getDiscordNotifUser,
+  createUserNotif,
+  deleteUserNotif,
+  getAllDiscordNotifs
 };

@@ -89,6 +89,48 @@ async function handleMessage(message, client, DB) {
             throw new ChatError(CANNOT_BE_USED_IN_PM);
           message.reply("/hangman random");
           break;
+        
+        case "addusernotif":
+        case "addusernotification":
+          checkPerms("roomdriver");
+          const target = toId(args.shift());
+          if (!target) throw new ChatError(`\`\`${config.prefix}addusernotif user, reason, [discord id to ping 1, discord id to ping 2, ...]\`\``);
+
+          if (await DB.getDiscordNotifUser(target, config.mainRoom)) {
+            throw new ChatError("A discord notification already exists for this user!");
+          }
+
+          const rearg = args.join(" ").split(",");
+          const reason = rearg.shift();
+          if (!reason?.length) throw new ChatError("Please provide a reason for the notification.");
+
+          let tag = ["@here"];
+          if (rearg?.length) tag = rearg;
+          
+          await DB.createUserNotif(target, config.mainRoom, reason, tag);
+          message.reply("Discord notification set up for " + target + "!");
+          break;
+
+        case "deleteusernotif":
+        case "deleteusernotification":
+          checkPerms("roomdriver");
+          const tgt = toId(args.shift());
+          if (!tgt) throw new ChatError("Please provide a target user.");
+
+          if (!(await DB.getDiscordNotifUser(tgt, config.mainRoom))) {
+            throw new ChatError("No matching entry found!");
+          }
+
+          await DB.deleteUserNotif(tgt, config.mainRoom);
+          message.reply("Discord notification removed!");
+          break;
+        
+        case "getallusernotifs":
+        case "getallusernotifications":
+          checkPerms("roomdriver");
+          var notfs = [...await DB.getAllDiscordNotifs()].map(e => e._id.split("-")[1]);
+          message.reply(`Got ${notfs.length} entr${notfs.length === 1 ? "y" : "ies"}: ${notfs.join(", ")}`);
+          break;
 
         // We're using both addwp and addhwp as the same command; the line
         // with useHelperPoints is what makes them slightly different
