@@ -10,32 +10,10 @@ const DEFAULT_MESSAGE = `Hi, I'm ${username}! I'm a Bot for the WiFi room - my p
 const CANNOT_BE_USED_IN_PM = "This command can only be used in a room.";
 
 const REPLIES = [
-  "You're welcome!",
-  "You're welcome!",
-  "You're welcome!",
-  "You're welcome!",
-  "You're welcome!",
-  "You're welcome!",
-  "You're welcome!",
-  "You're welcome!",
-  "You're welcome!",
-  "You're welcome!",
-  "You're welcome!",
-  "You're welcome!",
-  "You're welcome!",
-  "You're welcome!",
-  "You're welcome!",
-  "You're welcome!",
-  "You're welcome!",
-  "You're welcome!",
-  "You're welcome!",
-  "You're welcome!",
-  "You're welcome!",
-  "You're welcome!",
-  "You're welcome!",
   "Go away.",
   "Stop messaging me.",
   "piss off",
+  "You're welcome!",
 ];
 
 async function handleMessage(message, client, DB) {
@@ -48,8 +26,8 @@ async function handleMessage(message, client, DB) {
     if (!message.content.startsWith(config.prefix)) {
       if (message.type === "pm" && message.author?.name)
         if (["thank you", "ty", "thanks"].includes(message.content.toLowerCase().trim())) {
-          const idx = ~~(Math.random() * REPLIES.length);
-          message.reply(REPLIES[idx]);
+          const idx = ~~(Math.random() * (REPLIES.length + 20));
+          message.reply(idx < 3 ? REPLIES[idx] : REPLIES[3]);
         } else {
           message.reply(DEFAULT_MESSAGE);
         }
