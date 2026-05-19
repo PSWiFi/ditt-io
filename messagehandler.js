@@ -88,6 +88,27 @@ async function handleMessage(message, client, DB) {
           await DB.createUserNotif(target, config.mainRoom, reason, tag);
           message.reply("Discord notification set up for " + target + "!");
           break;
+        
+        case "addprizenotif":
+        case "addprizenotification":
+          checkPerms("roomdriver");
+          const ptarget = toId(args.shift());
+          if (!ptarget) throw new ChatError(`\`\`${config.prefix}addprizenotif user, note, [discord id to ping 1, discord id to ping 2, ...]\`\``);
+
+          if (await DB.getPrizeNotifUser(ptarget)) {
+            throw new ChatError("A discord notification already exists for this user!");
+          }
+
+          const prearg = args.join(" ").split(",");
+          const preason = prearg.shift();
+          if (!preason?.length) throw new ChatError("Please provide a note for the notification.");
+
+          let ptag = ["&980658607769145425"];
+          if (prearg?.length) ptag = prearg;
+          
+          await DB.createPrizeNotif(ptarget, preason, ptag);
+          message.reply("Prize notification set up for " + ptarget + "!");
+          break;
 
         case "deleteusernotif":
         case "deleteusernotification":
@@ -103,11 +124,32 @@ async function handleMessage(message, client, DB) {
           message.reply("Discord notification removed!");
           break;
         
+        case "deleteprizenotif":
+        case "deleteprizenotification":
+          checkPerms("chat ");
+          const ptgt = toId(args.shift());
+          if (!ptgt) throw new ChatError("Please provide a target user.");
+
+          if (!(await DB.getPrizeNotifUser(ptgt))) {
+            throw new ChatError("No matching entry found!");
+          }
+
+          await DB.deletePrizeNotif(ptgt);
+          message.reply("Prize notification removed!");
+          break;
+        
         case "getallusernotifs":
         case "getallusernotifications":
           checkPerms("roomdriver");
           var notfs = [...await DB.getAllDiscordNotifs()].map(e => e._id.split("-")[1]);
           message.reply(`Got ${notfs.length} entr${notfs.length === 1 ? "y" : "ies"}: ${notfs.join(", ")}`);
+          break;
+        
+        case "getallprizenotifs":
+        case "getallprizenotifications":
+          checkPerms("roomdriver");
+          var pnotfs = [...await DB.getAllPrizeNotifs()].map(e => e._id);
+          message.reply(`Got ${pnotfs.length} prize entr${pnotfs.length === 1 ? "y" : "ies"}: ${pnotfs.join(", ")}`);
           break;
 
         // We're using both addwp and addhwp as the same command; the line

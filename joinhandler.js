@@ -3,38 +3,62 @@ const https = require("https");
 
 dotenv.config();
 
-const { DISCORD_WEBHOOK_URL: url, BOT_USERNAME: username } = process.env;
+const { DISCORD_WEBHOOK_URL: url, PRIZES_WEBHOOK_URL: pz_url, BOT_USERNAME: username } = process.env;
 
 async function handleJoin(room, user, isIntro, DB) {
-  if (isIntro || !url?.length) return;
+  if (isIntro) return;
+
+  const time = +(new Date());
 
   var entry = await DB.getDiscordNotifUser(user, room);
-  if (entry) {
+  if (entry && url.length) {
     const tag = entry.ping;
     const tags = [];
     for (let i = 0; i < tag.length; i++) {
       let t = tag[i].trim();
+      let hasAmp = t.startsWith("&");
       if (t === "@here") tags.push(t);
       else {
-        tags.push(`<@${toId(t)}>`);
+        tags.push(`<@${hasAmp ? "&" : ""}${toId(t)}>`);
       }
     }
 
     const reason = entry.reason;
     const ping = tags.join(" ");
-    const time = +(new Date());
 
     if (time - entry.lastSent < (30 * 60 * 60 * 1000)) return;
     entry.lastSent = time;
     await entry.save();
 
     const user = entry._id.split("-")[1];
-    const content = `**${user}** is online in the Wi-Fi room! Pinglist for this user: ${ping}\n**Alert reason**: ${reason}\n_You can disable future notifications for this user by sending_ \`\`/w dittio, ${config.prefix}deleteusernotif ${user}\`\` _on PS!_`;
-    sendWebhook(content);
+    const content = `**${user}** is online in the Wi-Fi room! Pinglist for this user: ${ping}\n**Alert reason**: ${reason}\n_You can disable discord notifications for this user by sending_ \`\`/w dittio, ${config.prefix}deleteusernotif ${user}\`\` _on PS!_`;
+    sendWebhook(content, url);
+  }
+
+  var pz_entry = await DB.getPrizeNotifUser(user);
+  if (pz_entry && pz_url.length) {
+    const tag = pz_entry.ping;
+    const tags = [];
+    for (let i = 0; i < tag.length; i++) {
+      let t = tag[i].trim();
+      let hasAmp = t.startsWith("&");
+      tags.push(`<@${hasAmp ? "&" : ""}${toId(t)}>`);
+    }
+
+    const reason = pz_entry.reason;
+    const ping = tags.join(" ");
+
+    if (time - pz_entry.lastSent < (30 * 60 * 60 * 1000)) return;
+    pz_entry.lastSent = time;
+    await pz_entry.save();
+
+    const user = pz_entry._id;
+    const content = `**${user}** is online in the Wi-Fi room! Pinglist for this user: ${ping}\n**Note**: ${reason}\n_You can disable prize notifications for this user by sending_ \`\`/w dittio, ${config.prefix}deleteprizenotif ${user}\`\` _on PS!_`;
+    sendWebhook(content, pz_url);
   }
 }
 
-function sendWebhook(content) {
+function sendWebhook(content, path) {
   const payload = JSON.stringify({
     content: content,
     username: username,
@@ -44,7 +68,7 @@ function sendWebhook(content) {
  const options = {
     hostname: 'discord.com',
     port: 443,
-    path: url,
+    path: path,
     method: 'POST',
     headers: {
         'Content-Type': 'application/json'
