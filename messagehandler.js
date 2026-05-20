@@ -68,6 +68,7 @@ async function handleMessage(message, client, DB) {
           message.reply("/hangman random");
           break;
         
+        case "aun":
         case "addusernotif":
         case "addusernotification":
           checkPerms("roomdriver");
@@ -89,6 +90,7 @@ async function handleMessage(message, client, DB) {
           message.reply("Discord notification set up for " + target + "!");
           break;
         
+        case "apn":
         case "addprizenotif":
         case "addprizenotification":
           checkPerms("roomdriver");
@@ -110,6 +112,7 @@ async function handleMessage(message, client, DB) {
           message.reply("Prize notification set up for " + ptarget + "!");
           break;
 
+        case "dun":
         case "deleteusernotif":
         case "deleteusernotification":
           checkPerms("roomdriver");
@@ -124,6 +127,7 @@ async function handleMessage(message, client, DB) {
           message.reply("Discord notification removed!");
           break;
         
+        case "dpn":
         case "deleteprizenotif":
         case "deleteprizenotification":
           checkPerms("chat ");
@@ -138,6 +142,10 @@ async function handleMessage(message, client, DB) {
           message.reply("Prize notification removed!");
           break;
         
+        case "gun":
+        case "gaun":
+        case "getusernotifs":
+        case "getusernotifications":
         case "getallusernotifs":
         case "getallusernotifications":
           checkPerms("roomdriver");
@@ -145,6 +153,10 @@ async function handleMessage(message, client, DB) {
           message.reply(`Got ${notfs.length} entr${notfs.length === 1 ? "y" : "ies"}: ${notfs.join(", ")}`);
           break;
         
+        case "gpn":
+        case "gapn":
+        case "getprizenotifs":
+        case "getprizenotifications":
         case "getallprizenotifs":
         case "getallprizenotifications":
           checkPerms("roomdriver");
