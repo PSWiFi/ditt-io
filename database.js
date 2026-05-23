@@ -45,7 +45,7 @@ async function createUserNotif(user, room, reason, tags) {
 }
 
 async function createPrizeNotif(user, reason, tags) {
-    const notif = new discordNotif({
+    const notif = new prizeNotif({
       _id: toId(user),
       reason: reason,
       ping: tags,
