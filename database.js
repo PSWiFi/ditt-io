@@ -67,7 +67,7 @@ async function getDiscordNotifUser(user, room) {
 }
 
 async function getPrizeNotifUser(user) {
-  return await discordNotif.findById(toId(user));
+  return await prizeNotif.findById(toId(user));
 }
 
 async function getAllDiscordNotifs() {
