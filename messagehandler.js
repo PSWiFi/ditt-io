@@ -93,7 +93,7 @@ async function handleMessage(message, client, DB) {
         case "restart": // Technically this command ends the process, but Ditt-io's VPS has a cron job set up to instantly restart the process
           checkPerms("roommod");
           const killreplyindex = ~~(Math.random() * KILL_REPLIES.length);
-          message.reply(KILL_REPLIES[killreplyindex]);
+          await message.reply(KILL_REPLIES[killreplyindex]);
           process.exit(0);
 
         case "hangman":
