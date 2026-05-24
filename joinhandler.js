@@ -1,11 +1,12 @@
 const dotenv = require("dotenv");
 const https = require("https");
+const DB = require("./database.js");
 
 dotenv.config();
 
 const { DISCORD_WEBHOOK_URL: url, PRIZES_WEBHOOK_URL: pz_url, BOT_USERNAME: username } = process.env;
 
-async function handleJoin(room, user, isIntro, DB) {
+async function handleJoin(room, user, isIntro) {
   if (isIntro) return;
 
   const time = +(new Date());

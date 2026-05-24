@@ -21,11 +21,11 @@ const client = new Client({
 client.connect();
 
 client.on("message", async (message) => {
-  await messageHandler.handleMessage(message, client, DB);
+  await messageHandler.handleMessage(message, client);
 });
 
 client.on("join", async (room, user, isIntro) => {
-  await joinHandler.handleJoin(room, user, isIntro, DB);
+  await joinHandler.handleJoin(room, user, isIntro);
 });
 
 // Attempt to rejoin room upon leave
