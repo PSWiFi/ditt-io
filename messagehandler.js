@@ -65,12 +65,14 @@ async function handleMessage(message, client) {
       const command = commandHandler.get(commandName, commands);
       // if (!command) throw new ChatError(DEFAULT_MESSAGE);
       if (command) {
-        if (command.type && !command.type.includes(message.type)) {
+        if (command.type && !command.type.includes(message.type) && !config.developers.includes(message.author.userid)) {
           if (!command.type.includes("pm") && message.type === "pm") throw new ChatError(CANNOT_BE_USED_IN_PM);
           if (!command.type.includes("chat") && message.type === "chat") throw new ChatErro(CAN_ONLY_BE_USED_IN_PM);
         }
-        if (command.permissions) checkPerms(command.permissions);
-        await command.exec(message, args, client);
+        if (!command.deferPermissionsCheck) {
+          if (command.permissions) checkPerms(command.permissions);
+        }
+        await command.exec(message, args, client, commandName, checkPerms);
       }
       else {
         switch (commandName) {
