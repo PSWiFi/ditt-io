@@ -1,4 +1,8 @@
 const dotenv = require("dotenv");
+import { exec } from "child_process";
+import { promisify } from "util";
+
+const sh = promisify(exec);
 
 dotenv.config();
 
@@ -56,6 +60,17 @@ async function handleMessage(message, client, DB) {
         // since it uses the displayed rank (higher of room and global rank)
         // Also remember to add a break after every command
         // Yes I could've used modular functions but I'm lazy okay
+        case "pull":
+          checkPerms("roomowner");
+          message.reply("Attempting git pull...");
+          const remoteOutput = await sh("git remote -v").catch(e => new ChatError(e));
+          if (!remoteOutput || remoteOutput.stderr) throw new ChatError("No git remote output");
+          const pull = await sh("git pull").catch(e => new ChatError(e));
+          if (!pull || (pull.stderr && !pull.stdout)) throw new ChatError("Could not pull origin.");
+          if (pull.stdout.replace("\n", "").replace(/-/g, " ") === "Already up to date.") throw new ChatError("Already up to date!");
+          message.reply("!code " + pull.stdout);
+          break;
+
         case "kill":
         case "restart": // Technically this command ends the process, but Ditt-io's VPS has a cron job set up to instantly restart the process
           checkPerms("roommod");
