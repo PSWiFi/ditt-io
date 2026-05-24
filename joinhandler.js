@@ -31,12 +31,12 @@ async function handleJoin(room, user, isIntro, DB) {
     const ping = tags.join(" ");
 
     const user = entry._id.split("-")[1];
-    const content = `**${user}** is online in the Wi-Fi room! Pinglist for this user: ${ping}\n**Alert reason**: ${reason}\n_You can disable discord notifications for this user by sending_ \`\`/w dittio, ${config.prefix}deleteusernotif ${user}\`\` _on PS!_`;
+    const content = `**${user}** is online in the ${room} room! Pinglist for this user: ${ping}\n**Alert reason**: ${reason}\n_You can disable discord notifications for this user by sending_ \`\`/w dittio, ${config.prefix}deleteusernotif ${user}\`\` _on PS!_`;
     sendWebhook(content, url);
   }
 
   var pz_entry = await DB.getPrizeNotifUser(user);
-  if (pz_entry && pz_url.length) {
+  if (room === "wifi" && pz_entry && pz_url.length) {
     if (time - pz_entry.lastSent < (30 * 60 * 60 * 1000)) return;
     pz_entry.lastSent = time;
     await pz_entry.save();
