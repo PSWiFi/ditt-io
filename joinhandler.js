@@ -12,6 +12,10 @@ async function handleJoin(room, user, isIntro, DB) {
 
   var entry = await DB.getDiscordNotifUser(user, room);
   if (entry && url.length) {
+    if (time - entry.lastSent < (30 * 60 * 60 * 1000)) return;
+    entry.lastSent = time;
+    await entry.save();
+
     const tag = entry.ping;
     const tags = [];
     for (let i = 0; i < tag.length; i++) {
@@ -26,10 +30,6 @@ async function handleJoin(room, user, isIntro, DB) {
     const reason = entry.reason;
     const ping = tags.join(" ");
 
-    if (time - entry.lastSent < (30 * 60 * 60 * 1000)) return;
-    entry.lastSent = time;
-    await entry.save();
-
     const user = entry._id.split("-")[1];
     const content = `**${user}** is online in the Wi-Fi room! Pinglist for this user: ${ping}\n**Alert reason**: ${reason}\n_You can disable discord notifications for this user by sending_ \`\`/w dittio, ${config.prefix}deleteusernotif ${user}\`\` _on PS!_`;
     sendWebhook(content, url);
@@ -37,6 +37,10 @@ async function handleJoin(room, user, isIntro, DB) {
 
   var pz_entry = await DB.getPrizeNotifUser(user);
   if (pz_entry && pz_url.length) {
+    if (time - pz_entry.lastSent < (30 * 60 * 60 * 1000)) return;
+    pz_entry.lastSent = time;
+    await pz_entry.save();
+
     const tag = pz_entry.ping;
     const tags = [];
     for (let i = 0; i < tag.length; i++) {
@@ -47,10 +51,6 @@ async function handleJoin(room, user, isIntro, DB) {
 
     const reason = pz_entry.reason;
     const ping = tags.join(" ");
-
-    if (time - pz_entry.lastSent < (30 * 60 * 60 * 1000)) return;
-    pz_entry.lastSent = time;
-    await pz_entry.save();
 
     const user = pz_entry._id;
     const content = `**${user}** is online in the Wi-Fi room! Pinglist for this user: ${ping}\n**Note**: ${reason}\n_You can disable prize notifications for this user by sending_ \`\`/w dittio, ${config.prefix}deleteprizenotif ${user}\`\` _on PS!_`;
