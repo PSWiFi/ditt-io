@@ -1,6 +1,6 @@
 const dotenv = require("dotenv");
-import { exec } from "child_process";
-import { promisify } from "util";
+const exec = require("child_process").exec;
+const promisify = require("util").promisify;
 
 const sh = promisify(exec);
 
