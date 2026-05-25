@@ -5,7 +5,7 @@ module.exports = {
     type: ["pm"],
     alias: ["dun", "deleteusernotif", "run", "removeusernotif", "removeusernotification"],
     permissions: "roomdriver",
-    async exec(message, args, client) {
+    async exec(message, args) {
         const rearg = args.join(" ").split(",");
 
         const target = toId(rearg.shift());

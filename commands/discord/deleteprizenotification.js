@@ -5,7 +5,7 @@ module.exports = {
     type: ["pm"],
     alias: ["dpn", "deleteprizenotif", "rpn", "removeprizenotif", "removeprizenotification"],
     permissions: "room ",
-    async exec(message, args, client) {
+    async exec(message, args) {
         const rearg = args.join(" ").split(",");
 
         const target = toId(rearg.shift());

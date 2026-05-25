@@ -7,7 +7,7 @@ module.exports = {
     name: "pull",
     permissions: "roomowner",
     type: ["pm", "chat"],
-    async exec(message, args, client) {
+    async exec(message) {
         message.reply("Attempting git pull...");
 
         const remoteOutput = await sh("git remote -v").catch(e => new ChatError(e));

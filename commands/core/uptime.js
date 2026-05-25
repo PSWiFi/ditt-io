@@ -7,7 +7,7 @@ const { BOT_USERNAME: username } = process.env;
 module.exports = {
     name: "uptime",
     type: ["pm", "chat"],
-    async exec(message, args, client) {
+    async exec(message) {
         const time = Math.floor(process.uptime());
 
         let hours = Math.floor(time / 3600);

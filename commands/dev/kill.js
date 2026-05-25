@@ -21,7 +21,7 @@ module.exports = {
     alias: ["restart"], // Technically this command ends the process, but Ditt-io's VPS has a cron job set up to instantly restart the process
     permissions: "roommod",
     type: ["pm", "chat"],
-    async exec(message, args, client) {
+    async exec(message) {
         const i = ~~(Math.random() * KILL_REPLIES.length);
         await message.reply(KILL_REPLIES[i]);
         console.log("Shutting down...");

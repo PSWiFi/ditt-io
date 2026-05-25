@@ -5,7 +5,7 @@ module.exports = {
     type: ["pm"],
     alias: ["gpn", "gapn", "getprizenotifs", "getallprizenotifs", "getallprizenotifications"],
     permissions: "roomdriver",
-    async exec(message, args, client) {
+    async exec(message) {
         var users = [...await DB.getAllPrizeNotifs()].map(e => e._id);
         if (!users.length) message.reply("No entries found!");   
         message.reply(`Got ${users.length} prize entr${users.length === 1 ? "y" : "ies"}: ${users.join(", ")}`); 

@@ -2,9 +2,9 @@ module.exports = {
     name: "rejoin",
     type: ["pm", "chat"],
     alias: ["rj"],
-    async exec(message, args, client) {
+    async exec(_, _, client) {
         for (const room of config.rooms) {
-            client.send("|/j " + room);
+            await client.send("|/j " + room);
         }
     }
 };
