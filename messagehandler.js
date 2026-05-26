@@ -63,87 +63,16 @@ async function handleMessage(message, client) {
 
     try {
       const command = commandHandler.get(commandName, commands);
-      // if (!command) throw new ChatError(DEFAULT_MESSAGE);
-      if (command) {
-        if (command.type && !command.type.includes(message.type) && !config.developers.includes(message.author.userid)) {
-          if (!command.type.includes("pm") && message.type === "pm") throw new ChatError(CANNOT_BE_USED_IN_PM);
-          if (!command.type.includes("chat") && message.type === "chat") throw new ChatErro(CAN_ONLY_BE_USED_IN_PM);
-        }
-        if (!command.deferPermissionsCheck) {
-          if (command.permissions) checkPerms(command.permissions);
-        }
-        await command.exec(message, args, client, commandName, checkPerms);
+      if (!command) throw new ChatError(DEFAULT_MESSAGE);
+      if (command.disabled) throw new ChatError("The requested command is currently disabled.");
+      if (command.type && !command.type.includes(message.type) && !config.developers.includes(message.author.userid)) {
+        if (!command.type.includes("pm") && message.type === "pm") throw new ChatError(CANNOT_BE_USED_IN_PM);
+        if (!command.type.includes("chat") && message.type === "chat") throw new ChatErro(CAN_ONLY_BE_USED_IN_PM);
       }
-      else {
-        switch (commandName) {
-          // Make sure to run a checkPerms on everything!
-          // Also would recommend using checkPerms('chatvoice') for broadcasting stuff
-          // since it uses the displayed rank (higher of room and global rank)
-          // Also remember to add a break after every command
-          // Yes I could've used modular functions but I'm lazy okay
-          case "monthly":
-            if (message.type === "pm") {
-              // Set the value of the monthly
-              checkPerms("roommod");
-              const tourDetails = args.join(" ").trim();
-              if (!tourDetails)
-                throw new ChatError("Please provide a format for the tour.");
-              let tmp = tourDetails.split(",");
-              const format = tmp.shift();
-              const rules = tmp.join(", ");
-              CACHE.tourDetails = tourDetails;
-              DB.setTourDetails(tourDetails);
-              message.reply(
-                `Set monthly tour to: \`\`${format}\`\`. Please ensure there are no typos in the format string or creating the tour will fail!`
-              );
-              if (rules?.length > 0) message.reply(`Added rules: ${rules}`);
-            } else if (message.type === "chat") {
-              // Creating a monthly tour
-              checkPerms("roomvoice");
-              if (!CACHE?.tourDetails?.value)
-                CACHE.tourDetails = await DB.getTourDetails();
-              if (!CACHE?.tourDetails?.value) break;
-
-              let tmp = CACHE.tourDetails.value.split(",");
-              const format = tmp.shift();
-              const rules = tmp.join(", ");
-
-              message.reply(
-                `/modnote Attempting to create a ${format} tour. If it is unsuccessful, please verify the format is valid and get a Room Owner or higher to re-set it by using ${config.prefix}monthly FormatName in PMs with the bot.`
-              );
-              message.reply(`/tour create ${format}, elimination`);
-              if (rules?.length > 0) message.reply(`/tour rules ${rules}`);
-              message.reply("/tour autostart 5");
-              message.reply("/tour autodq 2");
-              message.reply("/tour scouting disallow");
-            }
-            break;
-
-          case "verify":
-            if (!args.length) throw new ChatError(
-              `\`\`${config.prefix}verify code\`\``
-            );
-            const code = args[0];
-            const res = await DB.verifyLinkUser(message.author.userid, code);
-            if (res === 3) {
-              return message.reply("Your account is already linked!");
-            } else if (res === 2) {
-              // Success
-              return message.reply("Verification success! Please use ``/linkuser`` one more time on discord to complete the process.");
-            } else if (res === 1) {
-              // Wrong code
-              return message.reply("Incorrect verification code! Could not link user.");
-            }
-            else {
-              // No entry found
-              return message.reply("Please use ``/linkuser`` with our discord bot to get started.");
-            }
-            break;
-
-          default:
-            throw new ChatError(DEFAULT_MESSAGE);
-        }
+      if (!command.deferPermissionsCheck) {
+        if (command.permissions) checkPerms(command.permissions);
       }
+      await command.exec(message, args, client, commandName, checkPerms);
     } catch (err) {
       message.reply(err.message);
       if (err.name !== "ChatError") console.log(err, err.name);

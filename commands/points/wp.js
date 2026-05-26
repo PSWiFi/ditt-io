@@ -3,7 +3,6 @@ const DB = require("../../database.js");
 module.exports = {
     name: "wp",
     alias: ["viewwp", "rizz", "viewrizz"],
-    permissions: "chatvoice",
     deferPermissionsCheck: true,
     async exec(message, args, _, commandName, checkPerms) {
         if (message.type === "chat") checkPerms("chatvoice");
