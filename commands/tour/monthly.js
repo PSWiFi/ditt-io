@@ -2,7 +2,6 @@ const DB = require("../../database.js");
 
 module.exports = {
     name: "monthly",
-    alias: ["viewwp", "rizz", "viewrizz"],
     deferPermissionsCheck: true,
     async exec(message, args, _, __, checkPerms) {
         if (message.type === "pm") {
