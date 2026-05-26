@@ -6,32 +6,37 @@ const commandsDirectory = path.join(__dirname, "commands");
 async function loadCommandsDirectory(dir = commandsDirectory) { 
     const commands = {};
     for await (const file of getFiles(dir)) { 
-        if (!file.endsWith(".js")) continue;
-        const command = require(file);
-        const commandName = command.name;
-        if (commandName !== toId(commandName)) { 
-            console.log(`${commandName} is not a valid command name! Skipping...`);
-            continue;
-        }
-        if (get(commandName, commands)) { 
-            console.log(`${commandName} is already defined or has an overlapping alias! Skipping...`);
-            continue;
-        }
-        if (command.alias) { 
-            let found = false;
-            for (const alias of command.alias) { 
-                if (get(alias, commands)) { 
-                    found = true;
-                    break;
-                }
-            }
-            if (found) { 
-                console.log(`${commandName} has an alias that exists on another command! Skipping...`);
+        try {
+            if (!file.endsWith(".js")) continue;
+            const command = require(file);
+            const commandName = command.name;
+            if (commandName !== toId(commandName)) {
+                console.log(`${commandName} is not a valid command name! Skipping...`);
                 continue;
             }
-        }
+            if (get(commandName, commands)) {
+                console.log(`${commandName} is already defined or has an overlapping alias! Skipping...`);
+                continue;
+            }
+            if (command.alias) {
+                let found = false;
+                for (const alias of command.alias) {
+                    if (get(alias, commands)) {
+                        found = true;
+                        break;
+                    }
+                }
+                if (found) {
+                    console.log(`${commandName} has an alias that exists on another command! Skipping...`);
+                    continue;
+                }
+            }
 
-        commands[commandName] = command;
+            commands[commandName] = command;
+        } catch (e) { 
+            console.error("Something went wrong while loading " + file);
+            console.error(e);
+        };
     }
     return commands;
 }
